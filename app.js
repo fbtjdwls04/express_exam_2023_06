@@ -110,6 +110,30 @@ app.patch("/music_list/:id", async (req, res) => {
   });
 });
 
+app.delete("/music_list/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const [rows] = await pool.query("SELECT * FROM music_list WHERE id = ?", [
+    id,
+  ]);
+
+  if (rows.length == 0) {
+    res.status(404).send("not found");
+  }
+
+  const [rs] = await pool.query(
+    `
+    DELETE FROM music_list
+    WHERE id = ?
+    `,
+    [id]
+  );
+
+  res.status(200).json({
+    id,
+  });
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
